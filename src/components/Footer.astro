@@ -3,13 +3,16 @@ import { site } from '../site';
 ---
 
 <footer class="border-t border-ink/10">
-  <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-10 text-sm text-muted sm:flex-row sm:justify-between sm:px-6">
+  <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 text-sm text-muted sm:flex-row sm:justify-between sm:px-6">
     <p>
-      © {new Date().getFullYear()} {site.name}. Built with AI, on purpose.
-      <span class="km" lang="km">បង្កើតដោយ AI ដោយចេតនា។</span>
+      © {new Date().getFullYear()} {site.name}, a training restaurant of
+      <a href={site.mainSite} class="font-medium text-ink underline underline-offset-4 hover:text-brand">New Hope Cambodia</a>.
+      <span class="km" lang="km">ភោជនីយដ្ឋានបណ្តុះបណ្តាលរបស់អង្គការ ញូវហូប កម្ពុជា។</span>
     </p>
-    <p>
-      Questions? <span lang="km" class="font-khmer">មានសំណួរ?</span> <a href={`mailto:${site.contactEmail}`} class="font-medium text-ink underline underline-offset-4 hover:text-brand">{site.contactEmail}</a>
+    <p class="flex flex-wrap gap-x-4 gap-y-1">
+      <a href={site.phoneHref} class="font-medium text-ink underline underline-offset-4 hover:text-brand">{site.phone}</a>
+      <a href={site.facebook} class="font-medium text-ink underline underline-offset-4 hover:text-brand">Facebook</a>
+      <a href={site.instagram} class="font-medium text-ink underline underline-offset-4 hover:text-brand">Instagram</a>
     </p>
   </div>
 </footer>

@@ -5,100 +5,111 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { getDecks } from '../lib/decks';
+import { site } from '../site';
 
-const steps = [
+// TODO: these are typical Khmer dishes, not New Hope's real menu yet.
+// Replace them with the restaurant's actual dishes (and prices, if you like).
+const dishes = [
   {
-    icon: '🧰',
-    title: 'Choose a stack',
-    titleKm: 'ជ្រើសរើស stack',
-    text: 'Pick the technology the AI will use. AI can help you choose. This week, it’s chosen for you.',
-    textKm: 'ជ្រើសរើសបច្ចេកវិទ្យាដែល AI នឹងប្រើ។ AI អាចជួយអ្នកជ្រើសរើសបាន។ សម្រាប់វគ្គនេះ យើងបានជ្រើសរើសរួចហើយ។',
+    icon: '🐟',
+    title: 'Fish amok',
+    titleKm: 'អាម៉ុកត្រី',
+    text: 'Fish steamed in banana leaf with coconut milk and kroeung spice paste.',
+    textKm: 'ត្រីចំហុយក្នុងស្លឹកចេក ជាមួយខ្ទិះដូង និងគ្រឿង។',
   },
   {
-    icon: '💬',
-    title: 'Prompt',
-    titleKm: 'ប្រាប់ AI',
-    text: 'Describe the website you want, in plain words. English or Khmer.',
-    textKm: 'ពិពណ៌នាគេហទំព័រដែលអ្នកចង់បាន ជាពាក្យសាមញ្ញ។ ភាសាអង់គ្លេស ឬភាសាខ្មែរក៏បាន។',
+    icon: '🥩',
+    title: 'Beef lok lak',
+    titleKm: 'ឡុកឡាក់សាច់គោ',
+    text: 'Stir-fried beef with rice, fresh salad, and lime-pepper dipping sauce.',
+    textKm: 'សាច់គោឆាជាមួយបាយ សាឡាត់ស្រស់ និងទឹកម្រេចក្រូចឆ្មារ។',
   },
   {
-    icon: '🔁',
-    title: 'Iterate',
-    titleKm: 'កែលម្អម្តងហើយម្តងទៀត',
-    text: 'Check the result and tell the AI what to improve. Repeat! This is the real skill.',
-    textKm: 'ពិនិត្យលទ្ធផល ហើយប្រាប់ AI ពីអ្វីដែលត្រូវកែ។ ធ្វើម្តងទៀត! នេះគឺជាជំនាញពិតប្រាកដ។',
+    icon: '🍜',
+    title: 'Nom banh chok',
+    titleKm: 'នំបញ្ចុក',
+    text: 'Rice noodles with a green fish curry and fresh herbs. A Khmer breakfast favourite.',
+    textKm: 'នំបញ្ចុកជាមួយសម្លប្រហើរ និងបន្លែស្រស់។ អាហារពេលព្រឹកដែលខ្មែរចូលចិត្ត។',
   },
   {
-    icon: '🚀',
-    title: 'Ship it',
-    titleKm: 'ដាក់ឱ្យប្រើ',
-    text: 'Publish it to the internet, free, at a link you can share.',
-    textKm: 'ដាក់វានៅលើអ៊ីនធឺណិត ដោយឥតគិតថ្លៃ ជាមួយតំណភ្ជាប់ដែលអ្នកអាចចែករំលែកបាន។',
+    icon: '🍛',
+    title: 'Khmer red curry',
+    titleKm: 'ការីក្រហមខ្មែរ',
+    text: 'A gentle coconut curry with sweet potato and vegetables, served with bread or rice.',
+    textKm: 'ការីខ្ទិះដូងស្រាលៗ ជាមួយដំឡូងជ្វា និងបន្លែ ញ៉ាំជាមួយនំបុ័ង ឬបាយ។',
+  },
+  {
+    icon: '🥗',
+    title: 'Fresh spring rolls',
+    titleKm: 'ណែមស្រស់',
+    text: 'Rice paper rolls with herbs and vegetables, and a peanut dipping sauce.',
+    textKm: 'ណែមរុំក្រដាសអង្ករ ជាមួយជីរ បន្លែ និងទឹកជ្រលក់សណ្តែកដី។',
+  },
+  {
+    icon: '🥭',
+    title: 'Fruit shakes',
+    titleKm: 'ទឹកក្រឡុកផ្លែឈើ',
+    text: 'Mango, passion fruit, banana and more, blended fresh.',
+    textKm: 'ស្វាយ ផ្លែសាវម៉ាវ ចេក និងផ្សេងៗទៀត ក្រឡុកស្រស់ៗ។',
   },
 ];
 
 const stats = [
-  { value: '0', label: 'lines of code to memorize', labelKm: 'បន្ទាត់កូដដែលត្រូវទន្ទេញ' },
-  { value: '1', label: 'live website each', labelKm: 'គេហទំព័រផ្ទាល់ខ្លួនម្នាក់មួយ' },
-  { value: '$0', label: 'to publish it', labelKm: 'ដើម្បីដាក់វាលើអ៊ីនធឺណិត' },
+  { value: '2010', label: 'the year our kitchen opened', labelKm: 'ឆ្នាំដែលផ្ទះបាយរបស់យើងបានបើក' },
+  { value: '7 days', label: 'open every week, 9am – 9pm', labelKm: 'បើករៀងរាល់ថ្ងៃ ម៉ោង ៩ ព្រឹក – ៩ យប់' },
+  { value: 'Free', label: 'school for local children, funded by meals like yours', labelKm: 'សាលាឥតគិតថ្លៃសម្រាប់កុមារក្នុងតំបន់ ដែលទទួលមូលនិធិពីអាហារដូចអ្នកញ៉ាំ' },
 ];
 
-const needs = [
+const steps = [
   {
-    title: 'An idea',
-    titleKm: 'គំនិតមួយ',
-    text: 'A business, a project, a club — anything you would want a website for.',
-    textKm: 'អាជីវកម្ម គម្រោង ក្លឹប — អ្វីក៏បានដែលអ្នកចង់មានគេហទំព័រ។',
+    icon: '🍽️',
+    title: 'You enjoy a meal',
+    titleKm: 'អ្នករីករាយនឹងអាហារ',
+    text: 'Fresh Khmer food, cooked and served with care in Mondul Bei village.',
+    textKm: 'អាហារខ្មែរស្រស់ៗ ចម្អិន និងបម្រើដោយយកចិត្តទុកដាក់ នៅភូមិមណ្ឌលបី។',
   },
   {
-    title: 'A Mac',
-    titleKm: 'កុំព្យូទ័រ Mac',
-    text: 'You will set it up yourself, with the AI as your guide.',
-    textKm: 'អ្នកនឹងរៀបចំវាដោយខ្លួនឯង ដោយមាន AI ជាអ្នកណែនាំ។',
+    icon: '👩‍🍳',
+    title: 'Trainees learn real skills',
+    titleKm: 'សិក្ខាកាមរៀនជំនាញពិតប្រាកដ',
+    text: 'Local Khmers learn cooking and hospitality in a real restaurant, and build confidence for a job.',
+    textKm: 'ប្រជាជនខ្មែរក្នុងតំបន់រៀនធ្វើម្ហូប និងបដិសណ្ឋារកិច្ច ក្នុងភោជនីយដ្ឋានពិតប្រាកដ ហើយមានទំនុកចិត្តដើម្បីរកការងារ។',
   },
   {
-    title: 'A GitHub account',
-    titleKm: 'គណនី GitHub',
-    text: 'Free. This is where your website’s files are kept safe. We make it together on Day 1.',
-    textKm: 'ឥតគិតថ្លៃ។ ជាកន្លែងរក្សាទុកឯកសារគេហទំព័ររបស់អ្នកដោយសុវត្ថិភាព។ យើងបង្កើតវាជាមួយគ្នានៅថ្ងៃទី ១។',
-  },
-  {
-    title: 'A Cloudflare account',
-    titleKm: 'គណនី Cloudflare',
-    text: 'Free. This puts your website on the internet.',
-    textKm: 'ឥតគិតថ្លៃ។ វាដាក់គេហទំព័ររបស់អ្នកនៅលើអ៊ីនធឺណិត។',
+    icon: '🎒',
+    title: 'Children go to school',
+    titleKm: 'កុមារបានទៅសាលា',
+    text: 'The money the restaurant makes goes to New Hope’s free school education program.',
+    textKm: 'ប្រាក់ដែលភោជនីយដ្ឋានរកបាន ចូលទៅកម្មវិធីអប់រំឥតគិតថ្លៃរបស់ ញូវហូប។',
   },
 ];
 
 const faqs = [
   {
-    q: 'Do I need to know how to code?',
-    qKm: 'តើខ្ញុំត្រូវចេះសរសេរកូដទេ?',
-    a: 'No. You will see some code, and you will learn what it is, but the AI writes it. Your job is to know what you want and to say it clearly.',
-    aKm: 'ទេ។ អ្នកនឹងឃើញកូដខ្លះ ហើយនឹងរៀនថាវាជាអ្វី ប៉ុន្តែ AI ជាអ្នកសរសេរវា។ ការងាររបស់អ្នក គឺដឹងថាអ្នកចង់បានអ្វី ហើយនិយាយវាឱ្យបានច្បាស់។',
+    q: 'Do I need to book?',
+    qKm: 'តើខ្ញុំត្រូវកក់ទុកជាមុនទេ?',
+    a: `Please call us on ${site.phone} to book a table, especially for a group.`,
+    aKm: `សូមទូរសព្ទមកយើងតាមលេខ ${site.phone} ដើម្បីកក់តុ ជាពិសេសសម្រាប់ក្រុម។`,
   },
   {
-    q: 'Can my website be in Khmer?',
-    qKm: 'តើគេហទំព័ររបស់ខ្ញុំអាចជាភាសាខ្មែរបានទេ?',
-    a: 'Yes. You can ask the AI to write in Khmer, or to make the site in both languages. Always have a Khmer speaker check the words — you know the language better than the AI does.',
-    aKm: 'បាន។ អ្នកអាចប្រាប់ AI ឱ្យសរសេរជាភាសាខ្មែរ ឬធ្វើគេហទំព័រជាពីរភាសា។ តែងតែឱ្យអ្នកចេះភាសាខ្មែរពិនិត្យពាក្យពេចន៍ — អ្នកស្គាល់ភាសានេះច្បាស់ជាង AI។',
+    q: 'Where does the money go?',
+    qKm: 'តើប្រាក់ទៅណា?',
+    a: 'All the money the restaurant makes goes to help fund New Hope Cambodia’s free school for local children.',
+    aKm: 'ប្រាក់ទាំងអស់ដែលភោជនីយដ្ឋានរកបាន ជួយផ្តល់មូលនិធិដល់សាលាឥតគិតថ្លៃរបស់អង្គការ ញូវហូប កម្ពុជា សម្រាប់កុមារក្នុងតំបន់។',
   },
   {
-    q: 'Do I keep my website after the workshop?',
-    qKm: 'តើខ្ញុំនៅតែមានគេហទំព័ររបស់ខ្ញុំក្រោយវគ្គសិក្សាទេ?',
-    a: 'Yes. Everything is in your own GitHub and Cloudflare accounts. It is yours, and it stays online.',
-    aKm: 'បាទ/ចាស។ អ្វីៗទាំងអស់នៅក្នុងគណនី GitHub និង Cloudflare ផ្ទាល់ខ្លួនរបស់អ្នក។ វាជារបស់អ្នក ហើយវានៅតែដំណើរការលើអ៊ីនធឺណិត។',
+    q: 'Who cooks the food?',
+    qKm: 'តើនរណាជាអ្នកធ្វើម្ហូប?',
+    a: 'Our trainees. It’s a training restaurant, so you’re helping them learn with every order.',
+    aKm: 'សិក្ខាកាមរបស់យើង។ នេះជាភោជនីយដ្ឋានបណ្តុះបណ្តាល ដូច្នេះរាល់ការកុម្ម៉ង់របស់អ្នក ជួយពួកគេឱ្យរៀន។',
   },
   {
-    q: 'What if the AI makes a mistake?',
-    qKm: 'ចុះបើ AI ធ្វើខុស?',
-    a: 'It will! Tell it what is wrong, the same way you would tell a person. If things get really messy, you can always go back to an earlier version.',
-    aKm: 'វានឹងធ្វើខុសម្តងម្កាល! ប្រាប់វាថាអ្វីខុស ដូចដែលអ្នកប្រាប់មនុស្សម្នាក់។ ប្រសិនបើអ្វីៗរញ៉េរញ៉ៃខ្លាំង អ្នកតែងតែអាចត្រឡប់ទៅកំណែមុនវិញបាន។',
+    q: 'Can volunteers and visitors eat here?',
+    qKm: 'តើអ្នកស្ម័គ្រចិត្ត និងភ្ញៀវអាចញ៉ាំនៅទីនេះបានទេ?',
+    a: 'Yes! Visitors and volunteers are always welcome.',
+    aKm: 'បាន! ភ្ញៀវ និងអ្នកស្ម័គ្រចិត្តតែងតែត្រូវបានស្វាគមន៍។',
   },
 ];
-
-const decks = getDecks();
 ---
 
 <Base>
@@ -114,50 +125,43 @@ const decks = getDecks();
         <div>
           <p class="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-white/70 px-3 py-1 text-sm font-medium">
             <span class="size-2 rounded-full bg-leaf"></span>
-            A vibe coding workshop at New Hope Cambodia
+            A training restaurant of New Hope Cambodia · Siem Reap
           </p>
           <h1 class="mt-6 font-display text-5xl leading-[1.02] font-extrabold tracking-tight text-balance sm:text-6xl lg:text-7xl">
-            Build a real website by <span class="text-brand">talking</span> to AI.
+            Delicious Khmer food that sends children to <span class="text-brand">school.</span>
           </h1>
-          <p lang="km" class="mt-4 text-xl text-ink/70">បង្កើតគេហទំព័រជាមួយ AI</p>
+          <p lang="km" class="mt-4 text-xl text-ink/70">អាហារខ្មែរឆ្ងាញ់ ដែលជួយកុមារឱ្យបានទៅសាលារៀន</p>
           <p class="mt-6 max-w-xl text-lg text-muted">
-            No coding experience needed. Describe the website you want, watch the AI build it, and publish it to the internet by the end of the week.
-            <span class="km" lang="km">មិនចាំបាច់មានបទពិសោធន៍សរសេរកូដទេ។ ពិពណ៌នាគេហទំព័រដែលអ្នកចង់បាន មើល AI បង្កើតវា ហើយដាក់វានៅលើអ៊ីនធឺណិតត្រឹមចុងសប្តាហ៍។</span>
+            At New Hope Restaurant, local trainees cook and serve your meal while they learn a trade. The money from every meal helps fund free school in Mondul Bei village.
+            <span class="km" lang="km">នៅភោជនីយដ្ឋាន ញូវហូប សិក្ខាកាមក្នុងតំបន់ចម្អិន និងបម្រើអាហាររបស់អ្នក ខណៈពេលកំពុងរៀនជំនាញ។ ប្រាក់ពីអាហារនីមួយៗ ជួយផ្តល់មូលនិធិដល់សាលាឥតគិតថ្លៃ នៅភូមិមណ្ឌលបី។</span>
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
-            <a href="/lesson" class="rounded-full bg-brand px-6 py-3 font-semibold text-paper shadow-lg shadow-brand/25 transition hover:bg-brand-dark">
-              See the lessons → <span lang="km" class="font-khmer font-normal opacity-80">មេរៀន</span>
+            <a href={site.phoneHref} class="rounded-full bg-brand px-6 py-3 font-semibold text-paper shadow-lg shadow-brand/25 transition hover:bg-brand-dark">
+              Call to book → <span lang="km" class="font-khmer font-normal opacity-80">ទូរសព្ទកក់</span>
             </a>
-            <a href="#how" class="rounded-full border border-ink/15 bg-white px-6 py-3 font-semibold transition hover:border-ink/40">
-              How it works <span lang="km" class="font-khmer font-normal opacity-60">របៀបដំណើរការ</span>
+            <a href="#menu" class="rounded-full border border-ink/15 bg-white px-6 py-3 font-semibold transition hover:border-ink/40">
+              See the menu <span lang="km" class="font-khmer font-normal opacity-60">មើលម៉ឺនុយ</span>
             </a>
           </div>
         </div>
 
-        <!-- Illustration: a prompt on the left becomes a website on the right -->
+        <!-- Illustration: a little menu card -->
         <div class="relative" aria-hidden="true">
-          <div class="rounded-2xl bg-ink p-5 font-mono text-sm text-paper shadow-2xl">
-            <div class="mb-4 flex gap-1.5">
-              <span class="size-3 rounded-full bg-brand"></span>
-              <span class="size-3 rounded-full bg-sun"></span>
-              <span class="size-3 rounded-full bg-leaf"></span>
+          <div class="mx-auto max-w-sm rotate-[-2deg] rounded-3xl border border-ink/10 bg-white p-6 shadow-2xl">
+            <p class="text-center font-display text-sm font-bold tracking-widest text-brand uppercase">Today's menu</p>
+            <p lang="km" class="text-center text-sm text-muted">ម៉ឺនុយថ្ងៃនេះ</p>
+            <div class="mt-5 space-y-3">
+              {dishes.slice(0, 4).map((d) => (
+                <div class="flex items-center gap-3 rounded-xl bg-paper px-3 py-2">
+                  <span class="text-2xl">{d.icon}</span>
+                  <span class="font-semibold">{d.title}</span>
+                </div>
+              ))}
             </div>
-            <p class="text-sun">&gt; Make a website for my family's bakery in Phnom Penh.</p>
-            <p class="mt-1 text-sun">&nbsp;&nbsp;Warm colors, our menu, and a map.</p>
-            <p class="mt-3 text-paper/60">✓ Created homepage</p>
-            <p class="text-paper/60">✓ Added menu with 6 items</p>
-            <p class="text-paper/60">✓ Added map and opening hours</p>
-            <p class="mt-3 animate-pulse">▍</p>
+            <p class="mt-5 text-center text-sm font-semibold text-leaf">♥ Every meal funds a free school</p>
           </div>
-          <div class="relative -mt-6 mr-2 ml-auto w-60 rotate-[3deg] rounded-xl border border-ink/10 bg-white p-4 shadow-xl sm:w-72">
-            <div class="h-20 rounded-lg bg-gradient-to-br from-sun to-brand"></div>
-            <p class="mt-3 font-display font-bold">Sokha's Bakery</p>
-            <p class="text-xs text-muted">Fresh bread every morning since 1998</p>
-            <div class="mt-3 grid grid-cols-3 gap-2">
-              <div class="h-8 rounded bg-paper"></div>
-              <div class="h-8 rounded bg-paper"></div>
-              <div class="h-8 rounded bg-paper"></div>
-            </div>
+          <div class="absolute -top-4 -right-1 rotate-[8deg] rounded-full bg-sun px-4 py-2 font-display font-bold shadow-lg sm:right-6">
+            Since 2010
           </div>
         </div>
       </div>
@@ -165,7 +169,7 @@ const decks = getDecks();
 
     <!-- STATS -->
     <section class="border-y border-ink/10 bg-white">
-      <dl class="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 py-10 sm:px-6 md:grid-cols-3">
+      <dl class="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-3 sm:px-6">
         {
           stats.map((s) => (
             <div>
@@ -181,155 +185,157 @@ const decks = getDecks();
       </dl>
     </section>
 
-    <!-- HOW IT WORKS -->
-    <section id="how" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 sm:px-6 sm:py-28">
-      <p class="font-semibold text-brand">How it works <span lang="km" class="font-khmer font-normal">· របៀបដំណើរការ</span></p>
+    <!-- MENU -->
+    <section id="menu" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 sm:px-6 sm:py-28">
+      <p class="font-semibold text-brand">On the menu <span lang="km" class="font-khmer font-normal">· ម៉ឺនុយ</span></p>
       <h2 class="mt-2 max-w-2xl font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-        Four steps from idea to live website.
+        Khmer favourites, made fresh every day.
       </h2>
-      <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">បួនជំហាន ពីគំនិតមួយ ទៅជាគេហទំព័រដែលដំណើរការពិតប្រាកដ។</p>
-      <ol class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">ម្ហូបខ្មែរដែលគេចូលចិត្ត ធ្វើស្រស់ៗរៀងរាល់ថ្ងៃ។</p>
+      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {
-          steps.map((s, i) => (
+          dishes.map((d) => (
             <li class="rounded-2xl border border-ink/10 bg-white p-6">
-              <div class="flex items-center justify-between">
-                <span class="text-3xl">{s.icon}</span>
-                <span class="font-display text-sm font-bold text-ink/30">0{i + 1}</span>
-              </div>
+              <span class="text-4xl">{d.icon}</span>
               <h3 class="mt-4 font-display text-xl font-bold">
-                {s.title}
-                <span class="km text-base" lang="km">{s.titleKm}</span>
+                {d.title}
+                <span class="km text-base" lang="km">{d.titleKm}</span>
               </h3>
               <p class="mt-2 text-muted">
-                {s.text}
-                <span class="km" lang="km">{s.textKm}</span>
+                {d.text}
+                <span class="km" lang="km">{d.textKm}</span>
               </p>
             </li>
           ))
         }
-      </ol>
+      </ul>
+      <p class="mt-6 text-sm text-muted">
+        Ask your server about today's dishes.
+        <span class="km" lang="km">សូមសួរអ្នកបម្រើអំពីម្ហូបថ្ងៃនេះ។</span>
+      </p>
+    </section>
+
+    <!-- HOW YOUR MEAL HELPS -->
+    <section id="impact" class="scroll-mt-20 bg-white">
+      <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+        <p class="font-semibold text-brand">Your meal helps <span lang="km" class="font-khmer font-normal">· អាហាររបស់អ្នកជួយ</span></p>
+        <h2 class="mt-2 max-w-2xl font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
+          One meal, three good things.
+        </h2>
+        <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">អាហារមួយពេល អំពើល្អបីយ៉ាង។</p>
+        <ol class="mt-12 grid gap-4 md:grid-cols-3">
+          {
+            steps.map((s, i) => (
+              <li class="rounded-2xl bg-paper p-6">
+                <div class="flex items-center justify-between">
+                  <span class="text-3xl">{s.icon}</span>
+                  <span class="font-display text-sm font-bold text-ink/30">0{i + 1}</span>
+                </div>
+                <h3 class="mt-4 font-display text-xl font-bold">
+                  {s.title}
+                  <span class="km text-base" lang="km">{s.titleKm}</span>
+                </h3>
+                <p class="mt-2 text-muted">
+                  {s.text}
+                  <span class="km" lang="km">{s.textKm}</span>
+                </p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
     </section>
 
     <!-- BIG STATEMENT -->
     <section class="bg-ink text-paper">
       <div class="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6 sm:py-28">
         <p class="font-display text-3xl leading-tight font-bold text-balance sm:text-5xl">
-          AI turns out to be <span class="text-sun">very good at writing code.</span> So the most useful skill now is knowing what to ask for.
+          Good food. <span class="text-sun">Real skills.</span> Free school. All from the same kitchen.
         </p>
         <p lang="km" class="km mt-6 text-xl sm:text-2xl">
-          AI ពិតជាពូកែសរសេរកូដណាស់។ ដូច្នេះ ជំនាញដែលមានប្រយោជន៍បំផុតនាពេលនេះ គឺការដឹងថាត្រូវស្នើសុំអ្វី។
+          អាហារឆ្ងាញ់។ ជំនាញពិតប្រាកដ។ សាលាឥតគិតថ្លៃ។ ទាំងអស់ចេញពីផ្ទះបាយតែមួយ។
         </p>
       </div>
     </section>
 
-    <!-- LESSONS -->
-    <section id="lessons" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 sm:px-6 sm:py-28">
-      <p class="font-semibold text-brand">Lessons <span lang="km" class="font-khmer font-normal">· មេរៀន</span></p>
-      <h2 class="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">Start here.</h2>
-      <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">ចាប់ផ្តើមនៅទីនេះ។</p>
-      <div class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {
-          decks.map((deck) => (
-            <a
-              href={`/lesson/${deck.slug}`}
-              class="group flex flex-col rounded-2xl border border-ink/10 bg-white p-6 transition hover:-translate-y-1 hover:border-brand hover:shadow-xl"
-            >
-              <span class="font-display text-sm font-bold tracking-wide text-brand uppercase">{deck.eyebrow}</span>
-              <span class="mt-2 font-display text-2xl font-bold">
-                {deck.title.replace(/^[^—]+—\s*/, '')}
-                {deck.titleKm && <span class="km text-lg" lang="km">{deck.titleKm.replace(/^[^—]+—\s*/, '')}</span>}
-              </span>
-              <span class="mt-2 flex-1 text-muted">
-                {deck.subtitle}
-                {deck.subtitleKm && <span class="km" lang="km">{deck.subtitleKm}</span>}
-              </span>
-              <span class="mt-6 font-semibold text-brand">Open slides <span class="inline-block transition group-hover:translate-x-1">→</span> <span lang="km" class="font-khmer font-normal">បើកស្លាយ</span></span>
-            </a>
-          ))
-        }
-        <a
-          href="/setup"
-          class="group flex flex-col rounded-2xl border border-ink/10 bg-white p-6 transition hover:-translate-y-1 hover:border-brand hover:shadow-xl"
-        >
-          <span class="font-display text-sm font-bold tracking-wide text-brand uppercase">Guide</span>
-          <span class="mt-2 font-display text-2xl font-bold">
-            Set up your Mac
-            <span class="km text-lg" lang="km">រៀបចំកុំព្យូទ័រ Mac របស់អ្នក</span>
-          </span>
-          <span class="mt-2 flex-1 text-muted">
-            Install the Claude app, then let the AI set up the rest of your computer.
-            <span class="km" lang="km">ដំឡើងកម្មវិធី Claude បន្ទាប់មកឱ្យ AI រៀបចំផ្នែកផ្សេងទៀតនៃកុំព្យូទ័ររបស់អ្នក។</span>
-          </span>
-          <span class="mt-6 font-semibold text-brand">Open the guide <span class="inline-block transition group-hover:translate-x-1">→</span> <span lang="km" class="font-khmer font-normal">បើកការណែនាំ</span></span>
-        </a>
+    <!-- OUR STORY -->
+    <section class="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-[1fr_1.4fr]">
+      <div>
+        <p class="font-semibold text-brand">Our story <span lang="km" class="font-khmer font-normal">· រឿងរ៉ាវរបស់យើង</span></p>
+        <h2 class="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">It started in a grass hut.</h2>
+        <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">វាចាប់ផ្តើមនៅក្នុងខ្ទមស្បូវមួយ។</p>
       </div>
-    </section>
-
-    <!-- WHAT YOU NEED -->
-    <section class="bg-white">
-      <div class="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-[1fr_1.4fr]">
-        <div>
-          <p class="font-semibold text-brand">Before you start <span lang="km" class="font-khmer font-normal">· មុនពេលចាប់ផ្តើម</span></p>
-          <h2 class="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">What you need</h2>
-          <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">អ្វីដែលអ្នកត្រូវការ</p>
-          <p class="mt-4 text-lg text-muted">
-            That's the whole list. Everything else, the AI will help you install.
-            <span class="km" lang="km">នោះហើយជាបញ្ជីទាំងមូល។ អ្វីៗផ្សេងទៀត AI នឹងជួយអ្នកដំឡើង។</span>
-          </p>
-        </div>
-        <ul class="grid gap-4 sm:grid-cols-2">
-          {
-            needs.map((n) => (
-              <li class="rounded-2xl bg-paper p-6">
-                <span class="grid size-8 place-items-center rounded-full bg-leaf text-sm font-bold text-paper">✓</span>
-                <h3 class="mt-4 font-display text-lg font-bold">
-                  {n.title}
-                  <span class="km text-base" lang="km">{n.titleKm}</span>
-                </h3>
-                <p class="mt-1 text-muted">
-                  {n.text}
-                  <span class="km" lang="km">{n.textKm}</span>
-                </p>
-              </li>
-            ))
-          }
-        </ul>
+      <div class="space-y-5 text-lg text-muted">
+        <p>
+          New Hope Cambodia began in Mondul Bei, a poor village on the edge of Siem Reap. Founder Soth Kemsour, a former Buddhist monk, started by teaching English to local children in a small grass hut.
+          <span class="km" lang="km">អង្គការ ញូវហូប កម្ពុជា បានចាប់ផ្តើមនៅភូមិមណ្ឌលបី ជាភូមិក្រីក្រមួយនៅជាយក្រុងសៀមរាប។ ស្ថាបនិក លោក សុទ្ធ ខេមសួរ ដែលធ្លាប់ជាព្រះសង្ឃ បានចាប់ផ្តើមបង្រៀនភាសាអង់គ្លេសដល់កុមារក្នុងភូមិ នៅក្នុងខ្ទមស្បូវតូចមួយ។</span>
+        </p>
+        <p>
+          Today New Hope runs a free school, health care, and support for families in crisis. In July 2010 it opened this restaurant, to teach cooking and hospitality skills to Khmers who need work, and to help pay for the school.
+          <span class="km" lang="km">សព្វថ្ងៃ ញូវហូប មានសាលាឥតគិតថ្លៃ សេវាថែទាំសុខភាព និងជំនួយដល់គ្រួសារដែលជួបវិបត្តិ។ នៅខែកក្កដា ឆ្នាំ២០១០ អង្គការបានបើកភោជនីយដ្ឋាននេះ ដើម្បីបង្រៀនជំនាញធ្វើម្ហូប និងបដិសណ្ឋារកិច្ចដល់ប្រជាជនខ្មែរដែលត្រូវការការងារ និងដើម្បីជួយចំណាយលើសាលា។</span>
+        </p>
+        <a href={site.mainSite} class="inline-block font-semibold text-brand underline underline-offset-4">
+          Learn more about New Hope Cambodia → <span lang="km" class="font-khmer font-normal">ស្វែងយល់បន្ថែម</span>
+        </a>
       </div>
     </section>
 
     <!-- FAQ -->
-    <section class="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28">
-      <h2 class="text-center font-display text-4xl font-extrabold tracking-tight">Questions</h2>
-      <p class="km mt-2 text-center text-xl font-semibold" lang="km">សំណួរ</p>
-      <div class="mt-10 divide-y divide-ink/10 border-y border-ink/10">
-        {
-          faqs.map((f) => (
-            <details class="group py-5">
-              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-bold">
-                <span>
-                  {f.q}
-                  <span class="km text-base" lang="km">{f.qKm}</span>
-                </span>
-                <span class="text-2xl text-brand transition group-open:rotate-45">+</span>
-              </summary>
-              <p class="mt-3 text-muted">
-                {f.a}
-                <span class="km" lang="km">{f.aKm}</span>
-              </p>
-            </details>
-          ))
-        }
+    <section class="bg-white">
+      <div class="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28">
+        <h2 class="text-center font-display text-4xl font-extrabold tracking-tight">Questions</h2>
+        <p class="km mt-2 text-center text-xl font-semibold" lang="km">សំណួរ</p>
+        <div class="mt-10 divide-y divide-ink/10 border-y border-ink/10">
+          {
+            faqs.map((f) => (
+              <details class="group py-5">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-bold">
+                  <span>
+                    {f.q}
+                    <span class="km text-base" lang="km">{f.qKm}</span>
+                  </span>
+                  <span class="text-2xl text-brand transition group-open:rotate-45">+</span>
+                </summary>
+                <p class="mt-3 text-muted">
+                  {f.a}
+                  <span class="km" lang="km">{f.aKm}</span>
+                </p>
+              </details>
+            ))
+          }
+        </div>
       </div>
     </section>
 
-    <!-- CALL TO ACTION -->
-    <section class="px-4 pb-20 sm:px-6">
+    <!-- VISIT US -->
+    <section id="visit" class="scroll-mt-20 px-4 py-20 sm:px-6">
       <div class="mx-auto max-w-6xl rounded-3xl bg-brand px-6 py-16 text-center text-paper sm:py-20">
-        <h2 class="font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Ready? Let's build something.</h2>
-        <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">រួចរាល់ហើយឬនៅ? តោះបង្កើតអ្វីមួយ។</p>
-        <a href="/lesson/day-1" class="mt-8 inline-block rounded-full bg-paper px-8 py-4 font-semibold text-ink transition hover:bg-sun">
-          Start with Day 1 → <span lang="km" class="font-khmer font-normal">ចាប់ផ្តើមថ្ងៃទី ១</span>
-        </a>
+        <h2 class="font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Come and eat with us.</h2>
+        <p class="km mt-3 text-xl font-semibold sm:text-2xl" lang="km">សូមអញ្ជើញមកញ៉ាំជាមួយយើង។</p>
+        <dl class="mx-auto mt-10 grid max-w-3xl gap-6 text-left sm:grid-cols-2">
+          <div class="rounded-2xl bg-paper/10 p-5">
+            <dt class="font-display font-bold">📍 Where <span lang="km" class="font-khmer font-normal opacity-80">· ទីតាំង</span></dt>
+            <dd class="mt-1">
+              {site.location}
+              <span class="km" lang="km">{site.locationKm}</span>
+            </dd>
+          </div>
+          <div class="rounded-2xl bg-paper/10 p-5">
+            <dt class="font-display font-bold">🕘 When <span lang="km" class="font-khmer font-normal opacity-80">· ម៉ោងបើក</span></dt>
+            <dd class="mt-1">
+              {site.hours}
+              <span class="km" lang="km">{site.hoursKm}</span>
+            </dd>
+          </div>
+        </dl>
+        <div class="mt-10 flex flex-wrap justify-center gap-3">
+          <a href={site.phoneHref} class="rounded-full bg-paper px-8 py-4 font-semibold text-ink transition hover:bg-sun">
+            Call {site.phone}
+          </a>
+          <a href={site.facebook} class="rounded-full border border-paper/40 px-8 py-4 font-semibold transition hover:bg-paper/10">
+            Message us on Facebook
+          </a>
+        </div>
       </div>
     </section>
   </main>
